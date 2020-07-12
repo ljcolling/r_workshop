@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  rstudio:
+    container_name: r_workshop
+    environment:
+      DISABLE_AUTH: 'true'
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: lcolling/r_workshop
+    volumes:
+      - ~/Github/r_workshop:/home/rstudio
+    working_dir: /home/rstudio
+    ports: 
+      - 8787:8787
