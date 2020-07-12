@@ -1,0 +1,431 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oxygen+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+
+<script>
+    $(document).ready(function() {
+        new Clipboard("#copy-button", {
+            text: function(trigger) {
+                var str = $(trigger).closest('panel').find('pre').text();
+                return str.replace(/ /g, "");
+            }
+        });
+    });
+
+    $(document).ready(function() {
+        $('.R').addClass('language-r');
+    });
+</script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/components/prism-core.min.js" integrity="sha512-wstmAnvcHpCrEIjaT/G9dgWhJUgtf4mlp+RUBds/CxgjKAy67VkD9qbY3IGUk7Ri/syWJ3H18rYuyGei2cGQrQ==" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/components/prism-r.min.js" integrity="sha512-lSWl5qE999eI+RBvotO3KrfQS97coVjn1zyeAHUCwk4RpXgiW3BXFNjWAyNtpdkcXPMZpH0uLjpKKNr/+jMQWg==" crossorigin="anonymous"></script>
+
+<style>
+    .btn {
+        padding: 0;
+        margin-right: 1em;
+    }
+    
+    .btn-primary {
+        background-color: black;
+        border-color: black;
+        padding-left: 1em;
+        padding-right: 1em;
+        z-index: -4;
+    }
+    
+    .hljs {
+        font-family: 'Source Code Pro', monospace;
+    }
+    
+    .hljs-comment {
+        color: #407c5f
+    }
+    
+    img {
+        color: rgba(0, 0, 0, 0) !important;
+    }
+    /*
+    #TOC li {
+        background: teal;
+        color: white
+    }
+
+    #TOC li.active {
+        color: black
+    }
+
+	*/
+    
+    .output-text {
+        font-family: 'Source Code Pro', monospace;
+        text-align: center;
+        font-weight: bold;
+    }
+    /*
+HIGHLIGHT
+    */
+    /**
+ * VS theme by Andrew Lock (https://andrewlock.net)
+ * Inspired by Visual Studio syntax coloring
+ */
+    
+    code[class*="language-"],
+    pre[class*="language-"] {
+        color: #393A34;
+        font-family: 'Source Code Pro', monospace;
+        direction: ltr;
+        text-align: left;
+        white-space: pre;
+        word-spacing: normal;
+        word-break: normal;
+        font-size: .9em;
+        line-height: 1.2em;
+        -moz-tab-size: 4;
+        -o-tab-size: 4;
+        tab-size: 4;
+        -webkit-hyphens: none;
+        -moz-hyphens: none;
+        -ms-hyphens: none;
+        hyphens: none;
+    }
+    
+    pre>code[class*="language-"] {
+        font-size: 1em;
+    }
+    
+    pre[class*="language-"]::-moz-selection,
+    pre[class*="language-"] ::-moz-selection,
+    code[class*="language-"]::-moz-selection,
+    code[class*="language-"] ::-moz-selection {
+        background: #C1DEF1;
+    }
+    
+    pre[class*="language-"]::selection,
+    pre[class*="language-"] ::selection,
+    code[class*="language-"]::selection,
+    code[class*="language-"] ::selection {
+        background: #C1DEF1;
+    }
+    /* Code blocks */
+    
+    pre[class*="language-"] {
+        padding: 1em;
+        margin: .5em 0;
+        overflow: auto;
+        border: 1px solid #dddddd;
+        background-color: white;
+    }
+    /* Inline code */
+    
+     :not(pre)>code[class*="language-"] {
+        padding: .2em;
+        padding-top: 1px;
+        padding-bottom: 1px;
+        background: #f8f8f8;
+        border: 1px solid #dddddd;
+    }
+    
+    .token.comment,
+    .token.prolog,
+    .token.doctype,
+    .token.cdata {
+        color: #008000;
+        font-style: italic;
+    }
+    
+    .token.namespace {
+        opacity: .7;
+    }
+    
+    .token.string {
+        color: #A31515;
+    }
+    
+    .token.punctuation,
+    .token.operator {
+        color: #393A34;
+        /* no highlight */
+    }
+    
+    .token.url,
+    .token.symbol,
+    .token.number,
+    .token.boolean,
+    .token.variable,
+    .token.constant,
+    .token.inserted {
+        color: #36acaa;
+    }
+    
+    .token.atrule,
+    .token.keyword,
+    .token.attr-value,
+    .language-autohotkey .token.selector,
+    .language-json .token.boolean,
+    .language-json .token.number,
+    code[class*="language-css"] {
+        color: #0000ff;
+    }
+    
+    .token.function {
+        color: #393A34;
+    }
+    
+    .token.deleted,
+    .language-autohotkey .token.tag {
+        color: #9a050f;
+    }
+    
+    .token.selector,
+    .language-autohotkey .token.keyword {
+        color: #00009f;
+    }
+    
+    .token.important,
+    .token.bold {
+        font-weight: bold;
+    }
+    
+    .token.italic {
+        font-style: italic;
+    }
+    
+    .token.class-name,
+    .language-json .token.property {
+        color: #2B91AF;
+    }
+    
+    .token.tag,
+    .token.selector {
+        color: #800000;
+    }
+    
+    .token.attr-name,
+    .token.property,
+    .token.regex,
+    .token.entity {
+        color: #ff0000;
+    }
+    
+    .token.directive.tag .tag {
+        background: #ffff00;
+        color: #393A34;
+    }
+    /* overrides color-values for the Line Numbers plugin
+ * http://prismjs.com/plugins/line-numbers/
+ */
+    
+    .line-numbers .line-numbers-rows {
+        border-right-color: #a5a5a5;
+    }
+    
+    .line-numbers-rows>span:before {
+        color: #2B91AF;
+    }
+    /* overrides color-values for the Line Highlight plugin
+* http://prismjs.com/plugins/line-highlight/
+*/
+    
+    .line-highlight {
+        background: rgba(193, 222, 241, 0.2);
+        background: -webkit-linear-gradient(left, rgba(193, 222, 241, 0.2) 70%, rgba(221, 222, 241, 0));
+        background: linear-gradient(to right, rgba(193, 222, 241, 0.2) 70%, rgba(221, 222, 241, 0));
+    }
+</style>
+
+
+<style>
+    *,
+     ::before,
+     ::after {
+        box-sizing: border-box;
+    }
+    
+    details {
+        padding: 0 1rem;
+        position: relative;
+        border: 1px solid #78909C;
+        border-radius: 6px;
+        background-color: #ECEFF1;
+        color: #263238;
+        transition: background-color .15s;
+        > :last-child {
+            margin-bottom: 1rem;
+        }
+        &::before {
+            width: 100%;
+            height: 100%;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: inherit;
+            opacity: .15;
+            box-shadow: 0 .25em .5em #263238;
+            pointer-events: none;
+            transition: opacity .2s;
+            z-index: -1;
+            width: 800px;
+        }
+        &[open] {
+            background-color: #FFF;
+            &::before {
+                opacity: .6;
+            }
+        }
+    }
+    
+    summary {
+        display: block;
+        position: relative;
+        font-size: 1.33em;
+        font-weight: bold;
+        cursor: pointer;
+        &::before,
+        &::after {
+            width: .75em;
+            height: 2px;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            content: '';
+            background-color: currentColor;
+            text-align: left;
+            transform: translateY(-50%);
+            transition: transform .2s ease-in-out;
+        }
+        &::after {
+            transform: translateY(-50%) rotate(90deg);
+            [open] & {
+                transform: translateY(-50%) rotate(180deg);
+            }
+        }
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
+    
+    li:not(:last-child) {
+        margin-bottom: 0.5em;
+    }
+    
+    code {
+        padding: 0.2em;
+        border-radius: 3px;
+        background-color: #E0E0E0;
+        pre>& {
+            display: block;
+            padding: 1em;
+            margin: 0;
+        }
+    }
+    
+    p.caption {
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    .titlehead {
+        font-family: 'Oxygen Mono', monospace;
+    }
+    
+    .pkg {
+        font-family: 'Source Code Pro', monospace;
+        font-weight: bold;
+        color: #00008b
+    }
+    
+    .pkg::before {
+        content: "{";
+    }
+    
+    .pkg::after {
+        content: "}";
+    }
+    /*
+.RR {
+    display:inline-block;
+    background-color: #4AA4DE;
+    font-size:1em;
+    line-height: 1.5em;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+
+
+}
+
+.RR:before,
+.RR:after {
+    content:'\200B';
+    display:inline-block;
+    line-height:0px;
+
+    padding-top:50%;
+    padding-bottom:50%;
+}
+
+.RR:before {
+    padding-left:.25em;
+}
+.RR:after {
+    padding-right:.25em;
+}
+*/
+    
+    .RR {
+        font-family: 'Source Code Pro', monospace;
+        font-weight: bold;
+        color: #00008b
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    h1.title {
+        font-size: 2.5em;
+    }
+    
+    h2 {
+        font-size: 1.7em;
+    }
+    
+    h3 {
+        font-size: 1.5em;
+    }
+    
+    h4 {
+        font-size: 1.4em;
+    }
+    
+    h5 {
+        font-size: 1.2em;
+    }
+    
+    h6 {
+        font-size: 1em;
+    }
+    
+    .table th:not([align]) {
+        text-align: left;
+    }
+</style>

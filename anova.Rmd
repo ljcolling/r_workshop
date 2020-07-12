@@ -1,0 +1,251 @@
+---
+title: "ANOVA"
+lang: "en"
+output:
+  html_document:
+    theme: paper
+    highlight: textmate
+    toc: true
+    toc_depth: 5
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+source("ma_tings.R")
+source("anova_code.R")
+detach_package(tidyverse)
+options(digits=2,scipen = 50)
+
+```
+
+In this session we'll learn how to perform *ANOVA* in [R]{.RR}. There are many different ways to perform the humble *ANOVA* in [R]{.RR}, and there are lots of alternatives to *ANOVA* available in [R]{.RR}, but we won't be discussing those today. Instead, the approach that I'm going to take is to teach you how to something (almost) identical to the kind of **ANOVA** you might already be performing in SPSS. For this reason, we'll focus on learning the [afex]{.pkg} package. It provides a one-stop shop for most things you'll want to do with ANOVA. 
+
+We'll cover all the basic kinds of *ANOVA* including within-subjects, between-subjects, and mixed ANOVA.
+
+# Preparing our data
+
+One thing that makes [R]{.RR} different to SPSS is that *most* statistical analyses in [R]{.RR} require data in **long format**. Most analyses in **SPSS** require data in **wide format** or a mix of **wide** and **long format** depending on whether you're doing a between subjects, within subjects, or mixed analysis (really, the distinction between wide and long only makes sense in the context of within-subject and mixed analysis). If none of the this makes sense, we'll look at a few examples. 
+
+If you're coming from SPSS you're probably familiar with **wide** format, where each **participant** gets their own row. In the example below we have the data from a `r example1$items_per_person` item scale for `r example1$n` participants.
+
+```{r,copy=FALSE, echo=FALSE}
+ html_table <- function(x, dom = 'tpr'){
+  width = dim(x)[2]-1
+   DT::datatable(x,rownames = FALSE,style = "default",  extensions = c('FixedColumns'),
+              options = list(dom = dom, scrollX = TRUE, fixedColumns = TRUE,
+                             columnDefs = list(list(className = 'dt-center', targets = 0:width))))
+
+ }
+
+html_table_part <- purrr::partial(DT::datatable,
+                            rownames = FALSE,style = "default",  extensions = c('FixedColumns'),
+              options = list(dom = 'tpr', scrollX = TRUE, fixedColumns = TRUE,
+                             columnDefs = list(list(className = 'dt-center', targets = 0:x))))
+
+sketch = htmltools::withTags(table(
+  class = 'display'))
+
+item_all %>% html_table()
+
+```
+
+
+Long format, however, each **measurement** gets their own row. Since each of participants has `r example1$items_per_person` measurements, each participant would get `r example1$items_per_person` rows. The same data in long format would look like the following.
+
+```{r,copy=FALSE, echo=FALSE}
+item_all_long %>% html_table(dom = "tpr")
+```
+
+Our example so far only includes one **variable** called `r varname`. To add **additional variables** we add new columns. In the example below we've just add a new **variable** called **`r varname2`**
+
+```{r,copy=FALSE, echo=FALSE}
+item_all_long2  %>% html_table(dom = "tpr")
+```
+
+ We teach the undergraduates to organise data in long format, and it's almost always better to organise data in long format because it provides greater flexibility in working with the data. However, it does mean that sometimes you'll need to organise different measures in different data tables (i.e., if you have an 6 item measure and a 4 item measure it doesn't make sense to have them in the same table). But this isn't an issue when it's easy to merge datasets on the fly. In the section on [data wrangling and pivoting](data_wrangling.html#pivoting) we'll cover how to easily transform our data from long to wide and wide to long, but for now we'll just assume that we already have long data handy.
+
+# Setting up our packages
+
+The first thing to do is to make sure we have the correct packages **installed** and to make sure they're **loaded** for this session. You've already learned about the `install.packages()`{.R} and `library()`{.R} functions to **install** and **load** packages, but I find it a little easier to use the function `xfun::pkg_attach2()`{.R}. This tries to **load** a package and if it's not **installed** then it'll install it for you! No more having to remember if you're got a package installed or not!
+
+```{r eval=FALSE}
+#install.packages("xfun") # install the xfun package! Only do this once!
+```
+
+
+With [xfun]{.pkg} installed, we can go ahead and install/load the rest of the packages we'll be using.
+
+```{r}
+# load / install some pacakes
+# afex: for doing the anova
+# emmeans: for followup tests
+# multcomp: for multiple testing corrections
+xfun::pkg_attach2("afex","apa","emmeans","multcomp")
+```   
+
+# Types of ANVOA
+
+## Between-subjects one-way ANVOA
+
+We'll start super simple with a between subjects one-way ANOVA. We'll use the data below. We just have our factor `r aov_data_oneway.labels[['IV']]`, our dependent variable `r aov_data_oneway.labels[['DV']]`, and a column with the participant ids called `r aov_data_oneway.labels[['ID']]`.
+
+```{r,copy=FALSE, echo=FALSE}
+aov_data_oneway %>% html_table()
+```
+
+You can print the data out to the console yourself just by typing the name `aov_data_oneway`{.R}.
+
+```{r}
+aov_data_oneway
+```
+
+Now let's try to do a one-way ANOVA. We're going to compare `r aov_data_oneway.labels[['DV']]` across the different `r aov_data_oneway.labels[['IV']]`s. We'll use the `aov_ez()`{.R} function from the [afex]{.pkg} package. The structure of the basic function call is as follows.
+
+```{r}
+afex::aov_ez(id = "id", # the name of our ID variable
+             dv = "anxiety",  # the name of our DV
+             between = "group", # the name of our between groups factor
+             data = aov_data_oneway # our data table 
+)
+```
+
+We'll just get a print out of an ANOVA table, which might not be super useful. So we'll save the output as an object which will allow use to do some work with it. 
+
+```{r}
+our_oneway_anova <- afex::aov_ez(id = "id", # the name of our ID variable
+             dv = "anxiety",  # the name of our DV
+             between = "group", # the name of our between groups factor
+             data = aov_data_oneway # our data table 
+)
+```
+
+Although by saving the output as an object we can make some changes to the information that [afex]{.pkg} give us. For example, by default [afex]{.pkg} gives us an effect size called generalised eta-squared ($\eta_{\textrm{G}}^2$) rather than the partial eta-squared ($\eta_{\textrm{p}}^2$) that we get from SPSS. But we can ask [afex]{.pkg} to give us this instead. 
+
+```{r}
+anova(object = our_oneway_anova, # our anova object
+      es = "pes" # pes for partial eta squared, or ges for generalised eta squared
+      )
+```
+
+We'll learn more about plotting in the [introduction to [ggplot]{.pkg}](ggplot_intro.html) session, but we can use [afex]{.pkg} to quickly draw a plot using the `afex_plot()`{.R} function.
+
+```{r, eval=FALSE}
+
+afex:::afex_plot(object = our_oneway_anova, # our anova object
+                 x = "group" # what we want on the x axis
+                 )
+```
+
+```{r echo=FALSE, copy = FALSE}
+afex:::afex_plot(object = our_oneway_anova, # our anova object
+                 x = "group" # what we want on the x axis
+                 )
+```
+
+## Factorial ANOVA
+
+To extend our example to factorial ANOVA is just a trivial extension of what we've already done. All we need is a dataset with another factor. If we take a look at the dataset named `aov_data_factorial`{.R} we'll see that it has an additional factor called `gender`{.R}.
+
+```{r}
+aov_data_factorial
+```
+
+We can just add in `gender`{.R} in to the `between`{.R} argument in our call to `aov_ez()`{.R}.
+
+```{r, message=FALSE}
+aov_factorial <- afex::aov_ez(id = "id", # the name of our ID variable
+             dv = "anxiety",  # the name of our DV
+             between = c("group","gender"), # the names of our factors as a vector
+             data = aov_data_factorial # our factorial data table 
+)
+aov_factorial
+```
+
+With factorial ANOVA there's lot of ways in which we can plot them, so `afex_plot()`{.R} gives us this flexibility. Here are just a few of the possible options. 
+
+**Gender** along the x-axis with **group** in different panels.
+
+```{r, eval=FALSE}
+afex_plot(object = aov_factorial,x = "gender",panel = "group")
+```
+```{r echo=FALSE, copy = FALSE}
+afex_plot(object = aov_factorial,x = "gender",panel = "group")
+```
+
+**Group** along the x-axis with lines joining the **gender** categories.
+
+```{r, eval=FALSE}
+afex_plot(object = aov_factorial,x = "group",trace = "gender")
+```
+```{r echo=FALSE, copy = FALSE}
+afex_plot(object = aov_factorial,x = "group",trace = "gender")
+```
+
+**Gender** along the x-axis with lines joining the **group** categories.
+
+```{r, eval=FALSE}
+afex_plot(object = aov_factorial,x = "gender",trace = "group")
+```
+```{r echo=FALSE, copy = FALSE}
+afex_plot(object = aov_factorial,x = "gender",trace = "group")
+```
+
+## Repeated measures ANOVA
+
+The extension to repeated measures ANOVA is again simply a matter of specifying our within subject factor(s). If you're coming from the SPSS world you'll be used to your data being in **wide** format. But for [R]{.RR} we'll have to have it in long format. 
+
+
+```{r echo=FALSE, copy = FALSE}
+x = 4
+df.wide %>% dplyr::select(1:5) %>% mutate_at(vars(2:5), ~round(.)) %>% html_table_part(caption = "Data in wide format")
+
+```
+
+```{r echo=FALSE, copy = FALSE}
+x = 3
+aov_data_repeated %>% mutate_at(vars(2), ~round(.)) %>% html_table_part(caption = "Data in long format")
+
+```
+
+You can access the data yourself in `aov_data_repeated`{.R}
+
+```{r}
+aov_data_repeated
+```
+
+Now we can just specify the ANOVA using `aov_ez()`{.R} as before, but we'll specify `emotion`{.R} and `congruency`{.R} in the `within`{.R} argument.
+
+```{r}
+aov_repeated <- afex::aov_ez(id = "subjectID", # the name of our ID variable
+                             dv = "RT", # the name of our DV
+                             within = c("emotion","congruency"), # the names of our factors
+                             data = aov_data_repeated # our repeated measures data table
+                             )
+aov_repeated
+```
+
+One of the things you'll notice is that when we have a within-subjects factor then `aov_ez()`.{R} will automatically apply a correction for violations of sphericity if it's needed. By default, it applies the Greenhouse-Geisser correct, and the table that it prints out includes the correct DFs and the corresponding *p* value. If you instead want the Huynh—Feldt correction then you can specifiy this with the `anova()`{.R} function.
+
+```{r}
+anova(object = aov_repeated, # our anova object
+      correction = "HF" # HF for Huynh—Feldt, GG for Greenhouse-Geisser
+      )
+```
+
+Note, however, that we don't get the $\epsilon$ values or the uncorrected DFs. And, depending on your personal reporting preferences, you might want these. To get all the information, including the $\epsilon$ values, and the output from the Mauchly Tests for Sphericity, we can just use the `summary()`{.R} function[^1].
+
+[^1]: The `summary()`{.R} function is what is known as a **generic**. This means that it works with lots of different object not only the object produced by `aov_ez()`{.R}. We'll see that we can also use it for objects produced from the `psych::mediate()`{.R} function (for mediation analysis) or the `stats::lm()`{.R} function (for regression analysis).
+
+```{r}
+summary(aov_repeated)
+```
+
+
+# Post-hoc tests
+
+Now that we have our three 
+
+
+# Plotting ANOVAs 
+
+There's lot of options you can change for plotting, so if you want to know more there's a bunch of info on the [[afex]{.pkg} website](https://cran.r-project.org/web/packages/afex/vignettes/afex_plot_introduction.html)

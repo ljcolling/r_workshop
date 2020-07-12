@@ -1,0 +1,12 @@
+---
+title: "Logical operations"
+lang: "en"
+output:
+  html_document:
+    theme: paper
+    highlight: textmate
+    toc: true
+    toc_depth: 2
+    toc_float: true
+---
+

@@ -1,0 +1,220 @@
+---
+title: "Subsetting"
+lang: "en"
+output:
+  html_document:
+    theme: paper
+    highlight: textmate
+    toc: true
+    toc_depth: 5
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+source("ma_tings.R") 
+```
+Sub-setting allows us to select specific elements within a **vector** of items.
+
+#### Selecting elements by position
+
+We can select elements by position (or **index**) in the vector.
+
+- `x[4]`{.R} Select the fourth element
+
+- `x[-4]`{.R} Select everything **but** the fourth element
+
+- `x[2:5]`{.R} Select element two to five
+
+- `x[-(2:5)]`{.R} Select everything **but** element two to five
+
+- `x[c(1, 3)]`{.R} Select element one and three
+
+**Trying it out!**
+
+Let us see how some of these operations will look in [R]{.RR}. First, we'll create a vector with some values in it, and then we'll perform some operations on it. 
+
+```{r}
+x <- floor(runif(n = 10, min = 1, max = 20)) #  create a vector filled with random integers
+```
+
+```{r}
+x # print out the values to terminal
+```
+
+```{r}
+x[4] # select the fourth element
+```
+
+```{r}
+x[-4] # select everything but the fourth element
+```
+
+```{r}
+x[2:5] # select element two to five
+```
+
+```{r}
+x[-(2:5)] # select everything **but** element two to five
+```
+
+```{r}
+x[c(1, 3)] #elect element one and three
+```
+
+#### Logical operations (basic)
+
+To select elements that have a specific value, we'll first ask [R]{.RR} to tell us the **index** of those items. To do this we'll just use one of the **logical operators**. Some examples of **logical operators** are:
+
+  - `==`{.R} for equal to
+
+- `!=`{.R} for **not** equal to
+
+- `>`{.R} for greater than
+
+- `<`{.R} for less than
+
+- `<=`{.R} for less than or equal to
+
+- `>=`{.R} for greater than or equal to
+
+To use these logical operators we need our vector, the operator, and the value to compare it to.
+
+For example, `x >= 1`{.R} means "which elements in `x`{.R} are greater than or equal to 1?"
+
+When we perform logical operations on a vector like this [R]{.RR} will tell us which elements match the logical rule and which don't. It'll print out `TRUE`{.R} for those that match and `FALSE`{.R} for those that don't.
+[]{#example}
+
+**Trying it out!**
+
+Let us see what some of these operations will look like in [R]{.RR}. We'll again create a vector with some values in it, and then we'll perform some operations on it.
+
+```{r}
+x <- c(2, 8, 11, 10, -1) #  create a vector  with some numbers
+
+x # print out the values to terminal
+```
+
+```{r}
+x >= 1 # which elements are greater than or equal to 1
+```
+
+```{r}
+x == 2 # which elements are equal to 2
+```
+
+```{r}
+x != 2 # which elements are NOT equal to 2
+```
+
+We can also use logical operators to find which elements in a vector are a **member of a set**.
+
+- `%in%`{.R} for *is an member of a set*
+
+To use the `%in%`{.R} we'll also need another vector (our comparison set)
+
+**Trying it out!**
+
+```{r}
+x # print out x just is case we forgot what was in it!
+```
+
+```{r}
+x %in% c(1, 8, -1) # elements a member of the set {1, 8, -1}
+```
+
+Once we know which elements of a vector match a logical rule there are a couple of things we can do with this information: 1) we can ask for the element **indexes** or 2) we can ask for the element **values**
+
+##### Getting element indexes
+
+To get to positions in a vector that match a particular rule we just wrap our logical operation in a `which()`{.R} function.
+
+For example, `which(x > 5)`{.R} asks "what are the positions in `x`{.R} that have a value greater than 5?"
+
+**Trying it out!**
+
+```{r}
+x # print out x just is case we forgot what was in it!
+```
+
+```{r}
+which(x == 11) # which position is equal to 11
+```
+
+```{r}
+# the next line will return an empty vector because no values are greater than 15
+which(x > 15) # which position is greater than 15
+```
+
+```{r}
+# we can save the output of our logical operation to a variable and then use that as input for the which() function
+
+matches <- x == 11
+which(matches)
+```
+
+##### Getting element values
+
+We saw that when we used a logical operator on a vector is returned a vector of `TRUE`{.R} and `FALSE`{.R} values. We can use these `TRUE`{.R} and `FALSE`{.R} values to select elements in vector.
+
+- `x[x > 0]`{.R} Select all element that have a value greater than 0
+
+- `x[x %in% c(1, 6, 8)]`{.R} Select all elements that are a member of the set {1, 6, 8}
+
+- `x[-(2:5)]`{.R} Select everything **but** element two to four
+
+
+**Trying it out!**
+
+Let us see how some of these operations will look in [R]{.RR}. We'll again create a vector with some values in it, and then we'll perform some operations on it.
+
+```{r}
+x <- c(10, 10, 10, 11, -1) #  create a vector  with some numbers
+```
+```{r}
+x # print out the values to terminal
+```
+```{r}
+x[x == 10] # all the elements with value 10
+```
+```{r}
+matches <- x == 10
+
+x[matches] # note that there's no '' around matches because it's a variable name
+```
+
+#### Selecting elements from named vector
+
+Finally, when we have **named** vectors we can select elements using the **name** of that element
+
+- `x["arms"]`{.R} Select the element named **arms**
+
+**Trying it out!**
+
+```{r}
+x <- c(arms = 2, legs = 2, eyes = 2, heads = 1)
+x
+```
+
+```{r}
+x['arms']
+```
+
+
+
+##### Appendix
+
+
+
+<details><summary>Show code</summary>
+```{r eval=FALSE, code=xfun::read_utf8("subsetting.r")}
+```
+</details>
+
+[ss]{#example}
+
+```{r copy=FALSE,echo=FALSE}
+require(formatR)
+
+junipr::mywidget(paste0(xfun::read_utf8("subsetting.r")[2:55],collapse = "\n"), elementId = "junipr") %>% widgetframe::saveWidgetframe(file = "test")
+```
+

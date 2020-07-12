@@ -1,0 +1,27 @@
+name: "Staff R Workshop"
+#output_dir: "_site"
+navbar:
+  aria-label: "nav bar"
+  title: '<span class="titlehead">Staff <img src="R.svg" height="30px"> workshop</span>'
+  href: index.html
+  right:
+    - text: "Introduction"
+      href: index.html
+    - text: "Subsetting & Logic"
+      menu:
+        - text: "Sub-setting"
+          href: subsetting.html
+        - text: "Logical operations"
+          href: logical.html
+    - text: "Basic statistics I"
+      menu:
+        - text: "ANOVA"
+          href: anova.html
+output:
+  html_document:
+    theme: paper
+    highlight: textmate
+    include:
+      before_body: header.html
+      after_body: footer.html
+
