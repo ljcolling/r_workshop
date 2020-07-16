@@ -14,7 +14,7 @@ COPY teachingtools_0.0.0.9000.tar.gz teachingtools_0.0.0.9000.tar.gz
 RUN R CMD INSTALL rara_0.1.0.tar.gz 
 RUN R CMD INSTALL teachingtools_0.0.0.9000.tar.gz
 RUN rm teachingtools_0.0.0.9000.tar.gz
-RUN rm rara_0.1.0.tar.gz rara_0.1.0.tar.gz 
+RUN rm rara_0.1.0.tar.gz
 
 #RUN R -e 'teachingtools:::servernotes()'
 # ADD .Rprofile home/rstudio/.Rprofile
