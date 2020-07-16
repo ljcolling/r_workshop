@@ -9,7 +9,8 @@ services:
       dockerfile: Dockerfile
     image: lcolling/r_workshop
     volumes:
-      - ~/Github/r_workshop:/home/rstudio
-    working_dir: /home/rstudio
+      - ~/Github/teaching/r-workshop:/home/rstudio
+    working_dir: /home/rstudio/site_src
+    command: ./render
     ports: 
       - 8787:8787
